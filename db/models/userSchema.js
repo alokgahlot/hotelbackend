@@ -40,5 +40,5 @@ const bcryptPassword = async function (next) {
 //  pre method is used to bcrypt password before posting data to database
 userSchema.pre('save', bcryptPassword);
 
-module.exports = userSchema;
+module.exports = mongoose.model('user', userSchema);
 

@@ -15,8 +15,9 @@ router.post(USER_LOGIN, (req, res) => {
 
 // user registration
 router.post(USER_REGISTRATION, async (req, res) => {
-    const user = new User(req.body)
-    const userData = await user.save()
+    const { name, phone, email, password, confirmPassword, address } = req.body;
+    const user = new User({ name, phone, email, password, confirmPassword, address });
+    const userData = await user.save();
     res.status(200).json({
         message: 'maze aagye bhai',
         response: req.body,
