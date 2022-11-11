@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -26,19 +25,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    isAdmin:{
+type:Boolean, 
+default:false,
+    },
+
 })
 
-// bcrypting the password
-const bcryptPassword = async function (next) {
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 12);
-        this.confirmPassword = await bcrypt.hash(this.confirmPassword, 12);
-    }
-    next()
-}
+userSchema.virtual('id').get(function (){
+    return this._id.toHexString();
+})
 
-//  pre method is used to bcrypt password before posting data to database
-userSchema.pre('save', bcryptPassword);
+userSchema.set('toJSON',{
+    virtuals:true,
+})
 
-module.exports = mongoose.model('user', userSchema);
+exports.User = mongoose.model('user', userSchema);
+exports.userSchema= userSchema
 

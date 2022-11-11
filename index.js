@@ -2,11 +2,15 @@
 const express = require('express');
 const app = express();
 require('dotenv').config();
+const authJwt = require('./helpers/jwt')
 
 // local imports
 require('./db/Connection')
 
 // middleware
+
+// authentication Token 
+app.use(authJwt())
 
 // to send json data in response
 app.use(express.json())
