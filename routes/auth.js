@@ -7,11 +7,14 @@ const jwt = require('jsonwebtoken')
 require('dotenv/config')
 // user login
 router.post(USER_LOGIN, async (req, res) => {
+console.log('hitted', req) 
+var user;
+req.body.email?.lenght > 0 ? 
+ user = await User.findOne({email : req.body.email}) :    user = await User.findOne({phone : req.body.phone})
 
-    const user = await User.findOne({email : req.body.email})
 
     if(!user){
-     return   res.status(400).json({
+    return   res.status(404).json({
             message: 'Not found',
             response: req.body
         })
@@ -24,7 +27,7 @@ router.post(USER_LOGIN, async (req, res) => {
         },
         process.env.SECRET_KEY
         )
-        return  res.status(200).json({
+       return   res.status(200).json({
             message: 'Working fine',
             response: {
                 token : token, 
@@ -32,7 +35,7 @@ router.post(USER_LOGIN, async (req, res) => {
             }
         })
     }else {
-          res.status(400).json({
+         return res.status(404).json({
             message: 'Wrong Password',
          
         })
@@ -42,14 +45,30 @@ router.post(USER_LOGIN, async (req, res) => {
 
 // user registration
 router.post(USER_REGISTRATION, async (req, res) => {
-    const { name, phone, email, password, confirmPassword, address } = req.body;
-    const user = new User({ name, phone, email, password :bcrypt.hashSync(password, 10) ,      confirmPassword : bcrypt.hashSync(confirmPassword, 10), address });
+    const { name, phone, email, password, address } = req.body;
+    const user = new User({ name, phone, email, password :bcrypt.hashSync(password, 10) ,      address });
+try {
     const userData = await user.save();
+    if(userData){
+
+    
     res.status(200).json({
         message: 'maze aagye bhai',
         response: userData,
     })
     console.log(userData)
+}
+
+} catch (error) {
+    res.status(200).json({
+        message: 'maze aagye bhai',
+        response: error,
+    })
+}
+
+ 
+
+
 })
 
 module.exports = router;
